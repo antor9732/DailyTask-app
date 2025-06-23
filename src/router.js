@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from './components/LoginPage.vue'
 import RegistrationPage from './components/RegistrationPage.vue'
 import DailyUpdateForm from './components/DailyUpdateForm.vue'
+import ProfilePage from './components/ProfilePage.vue'
+import ProfileEditPage from './components/ProfileEditPage.vue'
 
 const routes = [
   { path: '/', component: LoginPage },
@@ -10,7 +12,9 @@ const routes = [
     path: '/daily-update',
     component: DailyUpdateForm,
     meta: { requiresAuth: true }
-  }
+  },
+  { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
+  { path: '/profile-edit', component: ProfileEditPage, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({

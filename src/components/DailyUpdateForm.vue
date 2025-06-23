@@ -14,7 +14,22 @@ function addItem(section) {
   form[section].push("");
 }
 
+function isArrayFilled(arr) {
+  return arr.every((item) => item && item.trim() !== "");
+}
+
 function submitUpdate() {
+  if (
+    !form.date ||
+    !form.name.trim() ||
+    !form.focus.trim() ||
+    !isArrayFilled(form.timeSpent) ||
+    !isArrayFilled(form.keyInsights) ||
+    !isArrayFilled(form.planTomorrow)
+  ) {
+    alert("Please fill all required fields!");
+    return;
+  }
   alert("Submitted successfully!");
   console.log("Submitted:", form);
 }
@@ -202,7 +217,7 @@ function submitUpdate() {
               d="M12 21.75V15.5A2.25 2.25 0 0 0 9.75 13.25H6.5c-2.25
                0-3.5-1.25-3.5-3.5V5.5c0-2.25 
               1.25-3.5 3.5-3.5h11c2.25 
-              0 3.5 1.25 3.5 3.5v4.25c0 
+              0 3.5 1.25 3.5 2.5v4.25c0 
               2.25-1.25 3.5-3.5 3.5h-3.25A2.25 2.25 0 0 0 12 15.5Z"
             ></path>
           </svg>

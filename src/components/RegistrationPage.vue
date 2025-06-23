@@ -1,4 +1,5 @@
 <template>
+  <div class="bg-animated"></div>
   <div class="login-wrapper">
     <h1>Registration</h1>
     <form @submit.prevent="handleRegister">
@@ -69,13 +70,40 @@ function handleRegister() {
 </script>
 
 <style scoped>
+.bg-animated {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+}
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 .login-wrapper {
   max-width: 400px;
-  margin: auto;
+  width: 100%;
   padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+  background: #fff;
+  /* Centering styles */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .form-group {
   margin-bottom: 15px;

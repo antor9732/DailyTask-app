@@ -1,3 +1,9 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f3f4f6;
+}
 .update-wrapper {
   max-width: 600px;
   margin: 30px auto;
@@ -6,6 +12,9 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   font-family: "Segoe UI", sans-serif;
   overflow: hidden;
+}
+.dropdown-icon {
+  color: whitesmoke;
 }
 
 .header {
