@@ -16,6 +16,8 @@ function handleLogin() {
     ) &&
     password.value === user.password
   ) {
+   
+    window.dispatchEvent(new Event("storage"));
     router.push("/daily-update");
   } else {
     alert("Invalid User ID or Password");

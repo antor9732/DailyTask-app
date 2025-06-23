@@ -1,9 +1,11 @@
 <script setup>
 import { reactive } from "vue";
 
+const user = JSON.parse(localStorage.getItem("user")) || {};
+
 const form = reactive({
   date: new Date().toISOString().substr(0, 10),
-  name: "",
+  name: user.name || "",
   focus: "",
   timeSpent: [""],
   keyInsights: [""],
@@ -32,6 +34,11 @@ function submitUpdate() {
   }
   alert("Submitted successfully!");
   console.log("Submitted:", form);
+
+  // Save to localStorage history
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+  history.push({ ...form });
+  localStorage.setItem("history", JSON.stringify(history));
 }
 </script>
 
@@ -91,6 +98,7 @@ function submitUpdate() {
             type="text"
             v-model="form.name"
             placeholder="Enter your Name"
+            readonly
           />
         </div>
       </div>

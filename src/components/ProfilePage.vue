@@ -1,3 +1,10 @@
+<script setup>
+import { ref } from "vue";
+import defaultImage from "../assets/img/antor.png";
+
+const user = ref(JSON.parse(localStorage.getItem("user")));
+</script>
+
 <template>
   <div class="profile-bg">
     <div class="profile-card" v-if="user">
@@ -15,13 +22,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import defaultImage from "../assets/antor.png";
-
-const user = ref(JSON.parse(localStorage.getItem("user")));
-</script>
 
 <style scoped>
 .profile-bg {

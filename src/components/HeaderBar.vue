@@ -1,11 +1,22 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import defaultImage from "../assets/antor.png";
+import defaultImage from "../assets/img/antor.png";
 
 const router = useRouter();
-const user = ref(JSON.parse(localStorage.getItem("user")));
+const user = ref(null);
 const showMenu = ref(false);
+
+function loadUser() {
+  user.value = JSON.parse(localStorage.getItem("user"));
+}
+
+onMounted(() => {
+  loadUser();
+   window.addEventListener("storage", loadUser);
+});
+
+window.dispatchEvent(new Event("storage"));
 
 function toggleMenu() {
   showMenu.value = !showMenu.value;
@@ -20,13 +31,34 @@ function logout() {
 
 <template>
   <header class="header-bar" v-if="user">
-    <div class="left">
-      <span class="app-title">Daily Task</span>
-    </div>
+  <a class="left" href="/daily-update">
+  <svg class="calendar-check"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 448 512"
+    fill="currentColor"
+  >
+    <path
+      d="M128 0c13.3 0 24 10.7 24
+         24v40h144V24c0-13.3 10.7-24 24-24s24 10.7 24 
+         24v40h40c35.3 0 64 28.7 64 64v320c0 35.3-28.7
+          64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64
+           64-64h40V24c0-13.3 10.7-24 24-24m272 192H48v256c0 8.8 7.2 16 16 16h320c8.8 0 16-7.2 16-16zm-71 105L217 409c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47l95-95c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+    />
+  </svg>
+  <span class="app-title">Daily Task</span>
+</a>
     <div class="right">
       <div class="profile-area" @click="toggleMenu">
         <svg class="dropdown-icon" width="18" height="18" viewBox="0 0 20 20">
-          <path d="M5 8l5 5 5-5" stroke="currentcolor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path
+            d="M5 8l5 5 5-5"
+            stroke="currentcolor"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+          />
         </svg>
         <span class="username">{{ user.name || user.username }}</span>
         <img
@@ -38,25 +70,35 @@ function logout() {
       <div v-if="showMenu" class="dropdown-menu" @mouseleave="showMenu = false">
         <router-link to="/profile" class="dropdown-item">Profile</router-link>
         <router-link to="/profile-edit" class="dropdown-item">Edit Profile</router-link>
+        <router-link to="/history" class="dropdown-item">History</router-link>
         <a href="#" class="dropdown-item" @click.prevent="logout">Logout</a>
       </div>
     </div>
   </header>
-
 </template>
 
 <style scoped>
+.left {
+  color: white;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 8px;
+}
+.calendar-check {
+  color: #fff;
+}
 .header-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right,#9333ea, #4f46e5);
+  background: linear-gradient(to right, #9333ea, #4f46e5);
   color: #fff;
   padding: 0 20px;
   height: 60px;
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
   position: sticky; /* sticky position */
-  top: 0;           /* always stick to top */
+  top: 0; /* always stick to top */
   z-index: 1000;
 }
 .app-title {
@@ -64,7 +106,7 @@ function logout() {
   font-weight: bold;
   letter-spacing: 1px;
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 .right {
   display: flex;
@@ -76,14 +118,14 @@ function logout() {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   padding: 6px 14px 6px 8px;
   border-radius: 24px;
   transition: background 0.2s;
   position: relative;
 }
 .profile-area:hover {
-  background: rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.18);
 }
 .profile-img {
   width: 38px;
@@ -91,7 +133,7 @@ function logout() {
   border-radius: 50%;
   border: 2px solid #fff;
   object-fit: cover;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 .username {
   font-weight: 500;
@@ -122,8 +164,14 @@ function logout() {
   animation: fadeIn 0.18s;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-8px);}
-  to { opacity: 1; transform: translateY(0);}
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .dropdown-item {
   padding: 10px 24px;

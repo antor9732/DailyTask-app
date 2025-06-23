@@ -16,6 +16,13 @@ body {
 .dropdown-icon {
   color: whitesmoke;
 }
+.left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  color: white;
+}
 
 .header {
   background-image: linear-gradient(to right,#9333ea, #4f46e5);

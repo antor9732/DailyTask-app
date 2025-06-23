@@ -4,6 +4,7 @@ import RegistrationPage from './components/RegistrationPage.vue'
 import DailyUpdateForm from './components/DailyUpdateForm.vue'
 import ProfilePage from './components/ProfilePage.vue'
 import ProfileEditPage from './components/ProfileEditPage.vue'
+import HistoryPage from './components/HistoryPage.vue'
 
 const routes = [
   { path: '/', component: LoginPage },
@@ -14,7 +15,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
-  { path: '/profile-edit', component: ProfileEditPage, meta: { requiresAuth: true } }
+  { path: '/profile-edit', component: ProfileEditPage, meta: { requiresAuth: true } },
+  { path: '/history', component: HistoryPage, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({
