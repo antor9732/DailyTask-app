@@ -16,10 +16,10 @@ function handleRegister() {
     alert("Please fill all fields");
     return;
   }
-  if (!gmail.value.endsWith("@gmail.com")) {
-    alert("Please enter a valid Gmail address");
-    return;
-  }
+  // if (!gmail.value.endsWith("@gmail.com")) {
+  //   alert("Please enter a valid Gmail address");
+  //   return;
+  // }
   if (password.value !== repassword.value) {
     alert("Passwords do not match");
     return;

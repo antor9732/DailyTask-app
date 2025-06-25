@@ -1,3 +1,48 @@
+<script setup>
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const user = JSON.parse(localStorage.getItem("user")) || {};
+
+const form = reactive({
+  name: user.name || "",
+  gmail: user.gmail || "",
+  username: user.username || "",
+  profileImage: user.profileImage || ""
+});
+
+const showModal = ref(false);
+
+function onImageChange(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      form.profileImage = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function handleSave() {
+  if (!form.name || !form.gmail || !form.username) {
+    alert("Please fill all fields");
+    return;
+  }
+  // if (!form.gmail.endsWith("@gmail.com")) {
+  //   alert("Please enter a valid Gmail address");
+  //   return;
+  // }
+  localStorage.setItem("user", JSON.stringify(form));
+  showModal.value = true;
+  setTimeout(() => {
+    showModal.value = false;
+    router.push("/profile");
+  }, 1500);
+}
+</script>
+
 <template>
   <div class="bg-animated"></div>
   <div class="edit-wrapper">
@@ -27,47 +72,14 @@
       </div>
     </form>
   </div>
+  <!-- Modal -->
+  <div v-if="showModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Profile updated!</h2>
+      <p>Your profile has been updated successfully.</p>
+    </div>
+  </div>
 </template>
-
-<script setup>
-import { reactive } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-const user = JSON.parse(localStorage.getItem("user")) || {};
-
-const form = reactive({
-  name: user.name || "",
-  gmail: user.gmail || "",
-  username: user.username || "",
-  profileImage: user.profileImage || ""
-});
-
-function onImageChange(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      form.profileImage = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-function handleSave() {
-  if (!form.name || !form.gmail || !form.username) {
-    alert("Please fill all fields");
-    return;
-  }
-  if (!form.gmail.endsWith("@gmail.com")) {
-    alert("Please enter a valid Gmail address");
-    return;
-  }
-  localStorage.setItem("user", JSON.stringify(form));
-  alert("Profile updated!");
-  router.push("/profile");
-}
-</script>
 
 <style scoped>
 .bg-animated {
@@ -133,5 +145,21 @@ function handleSave() {
 }
 .btn.primary:hover {
   background-color: #45a049;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  text-align: center;
 }
 </style>
