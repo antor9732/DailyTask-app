@@ -1,3 +1,44 @@
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const name = ref("");
+const gmail = ref("");
+const username = ref("");
+const password = ref("");
+const repassword = ref("");
+const router = useRouter();
+
+const showModal = ref(false);
+
+function handleRegister() {
+  if (!name.value || !gmail.value || !username.value || !password.value || !repassword.value) {
+    alert("Please fill all fields");
+    return;
+  }
+  if (!gmail.value.endsWith("@gmail.com")) {
+    alert("Please enter a valid Gmail address");
+    return;
+  }
+  if (password.value !== repassword.value) {
+    alert("Passwords do not match");
+    return;
+  }
+  // Save user to localStorage
+  localStorage.setItem("user", JSON.stringify({
+    name: name.value,
+    gmail: gmail.value,
+    username: username.value,
+    password: password.value
+  }));
+  showModal.value = true;
+  setTimeout(() => {
+    showModal.value = false;
+    router.push("/");
+  }, 1500);
+}
+</script>
+
 <template>
   <div class="bg-animated"></div>
   <div class="login-wrapper">
@@ -31,43 +72,14 @@
       <router-link to="/">Already have an account? Login</router-link>
     </div>
   </div>
+  <!-- Modal -->
+  <div v-if="showModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Registration successful!</h2>
+      <p>Please login to continue.</p>
+    </div>
+  </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
-const name = ref("");
-const gmail = ref("");
-const username = ref("");
-const password = ref("");
-const repassword = ref("");
-const router = useRouter();
-
-function handleRegister() {
-  if (!name.value || !gmail.value || !username.value || !password.value || !repassword.value) {
-    alert("Please fill all fields");
-    return;
-  }
-  if (!gmail.value.endsWith("@gmail.com")) {
-    alert("Please enter a valid Gmail address");
-    return;
-  }
-  if (password.value !== repassword.value) {
-    alert("Passwords do not match");
-    return;
-  }
-  // Save user to localStorage
-  localStorage.setItem("user", JSON.stringify({
-    name: name.value,
-    gmail: gmail.value,
-    username: username.value,
-    password: password.value
-  }));
-  alert("Registration successful! Please login.");
-  router.push("/");
-}
-</script>
 
 <style scoped>
 .bg-animated {
@@ -131,5 +143,23 @@ function handleRegister() {
 }
 .btn.primary:hover {
   background-color: #45a049;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  text-align: center;
 }
 </style>

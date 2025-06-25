@@ -1,6 +1,8 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const user = JSON.parse(localStorage.getItem("user")) || {};
 
 const form = reactive({
@@ -12,6 +14,8 @@ const form = reactive({
   planTomorrow: [""],
 });
 
+const showModal = ref(false); // Modal state
+
 function addItem(section) {
   form[section].push("");
 }
@@ -20,7 +24,7 @@ function isArrayFilled(arr) {
   return arr.every((item) => item && item.trim() !== "");
 }
 
-function submitUpdate() {
+async function submitUpdate() {
   if (
     !form.date ||
     !form.name.trim() ||
@@ -32,18 +36,30 @@ function submitUpdate() {
     alert("Please fill all required fields!");
     return;
   }
-  alert("Submitted successfully!");
-  console.log("Submitted:", form);
 
   // Save to localStorage history
   let history = JSON.parse(localStorage.getItem("history")) || [];
   history.push({ ...form });
   localStorage.setItem("history", JSON.stringify(history));
+
+  showModal.value = true; // Show modal
+
+  setTimeout(() => {
+    showModal.value = false;
+    router.push("/thank-you");
+  }, 1500); // 1.5 second por Thank You page e
 }
 </script>
 
 <template>
   <div class="update-wrapper">
+    <!-- Modal -->
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Submitted successfully!</h2>
+      </div>
+    </div>
+
     <div class="header">
       <h1>Daily Work Update</h1>
       <p>Submit your progress and plans</p>
@@ -103,7 +119,7 @@ function submitUpdate() {
         </div>
       </div>
 
-      <div class="form-group section-box">
+      <div class="form-group">
         <label class="label-icon" for="focus">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -250,4 +266,51 @@ function submitUpdate() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-content p {
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.btn.primary {
+  background-color: #5c67f2;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.btn.primary:hover {
+  background-color: #5058c9;
+}
+</style>

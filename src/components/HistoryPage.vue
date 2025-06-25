@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const filterType = ref("all");
 const history = ref(JSON.parse(localStorage.getItem("history")) || []);
@@ -105,6 +107,10 @@ function deleteUpdate(item) {
     localStorage.setItem("history", JSON.stringify(history.value));
   }
 }
+
+function editUpdate(idx) {
+  router.push({ name: "EditUpdate", params: { index: idx } });
+}
 </script>
 
 <template>
@@ -169,6 +175,13 @@ function deleteUpdate(item) {
                 @click="deleteUpdate(item)"
               >
                 Delete
+              </button>
+              <button
+                class="btn primary"
+                style="margin-left:6px"
+                @click="editUpdate(idx)"
+              >
+                Edit
               </button>
             </td>
           </tr>

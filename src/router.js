@@ -16,7 +16,18 @@ const routes = [
   },
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
   { path: '/profile-edit', component: ProfileEditPage, meta: { requiresAuth: true } },
-  { path: '/history', component: HistoryPage, meta: { requiresAuth: true } }
+  { path: '/history', component: HistoryPage, meta: { requiresAuth: true } },
+  {
+    path: '/thank-you',
+    name: 'ThankYou',
+    component: () => import('./components/ThankYou.vue')
+  },
+  {
+  path: '/edit-update/:index',
+  name: 'EditUpdate',
+  component: () => import('./components/EditUpdateForm.vue'),
+  props: true
+}
 ]
 
 const router = createRouter({
