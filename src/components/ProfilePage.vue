@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import defaultImage from "../assets/img/antor.png";
+import defaultImage from "../assets/imgs/default-profile.svg";
 
 const user = ref(JSON.parse(localStorage.getItem("user")));
 </script>

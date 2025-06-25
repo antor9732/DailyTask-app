@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import defaultImage from "../assets/img/antor.png";
+import defaultImage from "../assets/imgs/default-profile.svg";
 
 const router = useRouter();
 const user = ref(null);
