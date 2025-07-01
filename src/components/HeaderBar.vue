@@ -31,24 +31,25 @@ function logout() {
 
 <template>
   <header class="header-bar" v-if="user">
-  <a class="left" href="/daily-update">
-  <svg class="calendar-check"
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 448 512"
-    fill="currentColor"
-  >
-    <path
-      d="M128 0c13.3 0 24 10.7 24
-         24v40h144V24c0-13.3 10.7-24 24-24s24 10.7 24 
-         24v40h40c35.3 0 64 28.7 64 64v320c0 35.3-28.7
-          64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64
-           64-64h40V24c0-13.3 10.7-24 24-24m272 192H48v256c0 8.8 7.2 16 16 16h320c8.8 0 16-7.2 16-16zm-71 105L217 409c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47l95-95c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
-    />
-  </svg>
-  <span class="app-title">Daily Task</span>
-</a>
+    <a class="left" href="/daily-update">
+      <svg class="calendar-check"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 448 512"
+        fill="currentColor"
+      >
+        <path
+          d="M128 0c13.3 0 24 10.7 24
+             24v40h144V24c0-13.3 10.7-24 24-24s24 10.7 24 
+             24v40h40c35.3 0 64 28.7 64 64v320c0 35.3-28.7
+              64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64
+               64-64h40V24c0-13.3 10.7-24 24-24m272 192H48v256c0 8.8 7.2 16 16 16h320c8.8 0 16-7.2 16-16zm-71 105L217 409c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47l95-95c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+        />
+      </svg>
+      <span class="app-title">Daily Task</span>
+    </a>
+   
     <div class="right">
       <div class="profile-area" @click="toggleMenu">
         <svg class="dropdown-icon" width="18" height="18" viewBox="0 0 20 20">
@@ -71,7 +72,9 @@ function logout() {
         <router-link to="/profile" class="dropdown-item">Profile</router-link>
         <router-link to="/profile-edit" class="dropdown-item">Edit Profile</router-link>
         <router-link to="/history" class="dropdown-item">History</router-link>
-        <a href="#" class="dropdown-item" @click.prevent="logout">Logout</a>
+        <router-link v-if="user.role === 'admin'" to="/admin" class="dropdown-item">Admin Dashboard</router-link>
+        <router-link to="/save-draft" class="dropdown-item">Save Draft</router-link>
+        <a href="/" class="dropdown-item" @click.prevent="logout">Logout</a>
       </div>
     </div>
   </header>
@@ -184,5 +187,20 @@ function logout() {
 .dropdown-item:hover {
   background: #f5f5f5;
   color: #388e3c;
+}
+.middle {
+  display: flex;
+  align-items: center;
+}
+.admin-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+.admin-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 </style>

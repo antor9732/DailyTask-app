@@ -7,6 +7,7 @@ const gmail = ref("");
 const username = ref("");
 const password = ref("");
 const repassword = ref("");
+const role = ref("employee"); // Default role
 const router = useRouter();
 
 const showModal = ref(false);
@@ -16,10 +17,6 @@ function handleRegister() {
     alert("Please fill all fields");
     return;
   }
-  // if (!gmail.value.endsWith("@gmail.com")) {
-  //   alert("Please enter a valid Gmail address");
-  //   return;
-  // }
   if (password.value !== repassword.value) {
     alert("Passwords do not match");
     return;
@@ -29,7 +26,8 @@ function handleRegister() {
     name: name.value,
     gmail: gmail.value,
     username: username.value,
-    password: password.value
+    password: password.value,
+    role: role.value
   }));
   showModal.value = true;
   setTimeout(() => {
@@ -41,42 +39,53 @@ function handleRegister() {
 
 <template>
   <div class="bg-animated"></div>
-  <div class="login-wrapper">
-    <h1>Registration</h1>
-    <form @submit.prevent="handleRegister">
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input id="name" type="text" v-model="name" placeholder="Enter your name" required />
+  <div class="min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="card shadow p-4" style="max-width: 550px; width: 100%; z-index:1;">
+      <h1 class="mb-4 text-center">Registration</h1>
+      <form @submit.prevent="handleRegister">
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name</label>
+          <input id="name" type="text" v-model="name" class="form-control" placeholder="Enter your name" required />
+        </div>
+        <div class="mb-3">
+          <label for="gmail" class="form-label">Gmail</label>
+          <input id="gmail" type="email" v-model="gmail" class="form-control" placeholder="Enter your Gmail" required />
+        </div>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" v-model="username" class="form-control" placeholder="Choose a username" required />
+        </div>
+        <div class="mb-3">
+          <label for="role" class="form-label">Role</label>
+          <select id="role" v-model="role" class="form-select" required>
+            <option value="employee">Employee</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" type="password" v-model="password" class="form-control" placeholder="Enter password" required />
+        </div>
+        <div class="mb-3">
+          <label for="repassword" class="form-label">Re-type Password</label>
+          <input id="repassword" type="password" v-model="repassword" class="form-control" placeholder="Re-enter password" required />
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">Register</button>
+        </div>
+      </form>
+      <div class="mt-3 text-center">
+        <router-link to="/">Already have an account? Login</router-link>
       </div>
-      <div class="form-group">
-        <label for="gmail">Gmail</label>
-        <input id="gmail" type="email" v-model="gmail" placeholder="Enter your Gmail" required />
-      </div>
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input id="username" type="text" v-model="username" placeholder="Choose a username" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input id="password" type="password" v-model="password" placeholder="Enter password" required />
-      </div>
-      <div class="form-group">
-        <label for="repassword">Re-type Password</label>
-        <input id="repassword" type="password" v-model="repassword" placeholder="Re-enter password" required />
-      </div>
-      <div class="actions">
-        <button type="submit" class="btn primary">Register</button>
-      </div>
-    </form>
-    <div style="margin-top:10px;">
-      <router-link to="/">Already have an account? Login</router-link>
     </div>
-  </div>
-  <!-- Modal -->
-  <div v-if="showModal" class="modal-overlay">
-    <div class="modal-content">
-      <h2>Registration successful!</h2>
-      <p>Please login to continue.</p>
+    <!-- Modal -->
+    <div v-if="showModal" class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.3);">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+          <h2 class="mb-2">Registration successful!</h2>
+          <p>Please login to continue.</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -102,64 +111,5 @@ function handleRegister() {
   100% {
     background-position: 0% 50%;
   }
-}
-.login-wrapper {
-  max-width: 400px;
-  width: 100%;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
-  background: #fff;
-  /* Centering styles */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.form-group {
-  margin-bottom: 15px;
-}
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-}
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.actions {
-  text-align: right;
-}
-.btn.primary {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.btn.primary:hover {
-  background-color: #45a049;
-}
-
-/* Modal styles */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-.modal-content {
-  background: #fff;
-  padding: 2rem 3rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-  text-align: center;
 }
 </style>

@@ -5,6 +5,7 @@ import DailyUpdateForm from './components/DailyUpdateForm.vue'
 import ProfilePage from './components/ProfilePage.vue'
 import ProfileEditPage from './components/ProfileEditPage.vue'
 import HistoryPage from './components/HistoryPage.vue'
+import AdminDashboard from './components/AdminDashboard.vue'
 
 const routes = [
   { path: '/', component: LoginPage },
@@ -23,10 +24,21 @@ const routes = [
     component: () => import('./components/ThankYou.vue')
   },
   {
-  path: '/edit-update/:index',
-  name: 'EditUpdate',
-  component: () => import('./components/EditUpdateForm.vue'),
-  props: true
+    path: '/edit-update/:index',
+    name: 'EditUpdate',
+    component: () => import('./components/EditUpdateForm.vue'),
+    props: true
+  },
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: AdminDashboard,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+  path: '/save-draft',
+  component: () => import('./components/SaveDraft.vue'),
+  meta: { requiresAuth: true }
 }
 ]
 
@@ -40,6 +52,8 @@ router.beforeEach((to, from, next) => {
   const user = JSON.parse(localStorage.getItem('user'))
   if (to.meta.requiresAuth && !user) {
     next({ path: '/' }) // Redirect to login if not logged in
+  } else if (to.meta.requiresAdmin && (!user || user.role !== 'admin')) {
+    next({ path: '/daily-update' }) // Redirect non-admin users
   } else {
     next()
   }
