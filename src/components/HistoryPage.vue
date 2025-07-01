@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 const router = useRouter();
 
 const filterType = ref("all");
@@ -19,12 +21,14 @@ watch(filterType, (val) => {
 function isThisWeek(dateStr) {
   const now = new Date();
   const input = new Date(dateStr);
-  const first = now.getDate() - now.getDay();
-  const last = first + 6;
-  const weekStart = new Date(now.setDate(first));
-  weekStart.setHours(0,0,0,0);
-  const weekEnd = new Date(now.setDate(last));
-  weekEnd.setHours(23,59,59,999);
+  // Get the first day (Sunday) of this week
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay());
+  weekStart.setHours(0, 0, 0, 0);
+  // Get the last day (Saturday) of this week
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+  weekEnd.setHours(23, 59, 59, 999);
   return input >= weekStart && input <= weekEnd;
 }
 
@@ -42,38 +46,41 @@ function isInRange(dateStr) {
   const d = new Date(dateStr);
   const from = new Date(dateFrom.value);
   const to = new Date(dateTo.value);
-  from.setHours(0,0,0,0);
-  to.setHours(23,59,59,999);
+  from.setHours(0, 0, 0, 0);
+  to.setHours(23, 59, 59, 999);
   return d >= from && d <= to;
 }
 
 const filtered = computed(() => {
   if (filterType.value === "week") {
-    return history.value.filter(item => isThisWeek(item.date));
+    return history.value.filter((item) => isThisWeek(item.date));
   }
   if (filterType.value === "month") {
-    return history.value.filter(item => isThisMonth(item.date));
+    return history.value.filter((item) => isThisMonth(item.date));
   }
   if (dateFrom.value && dateTo.value) {
-    return history.value.filter(item => isInRange(item.date));
+    return history.value.filter((item) => isInRange(item.date));
   }
   return history.value;
 });
 
+// Download CSV function
 function downloadCSV() {
   if (!filtered.value.length) return;
   const rows = [
     ["Date", "Name", "Focus", "Time Spent", "Key Insights", "Plan Tomorrow"],
-    ...filtered.value.map(item => [
+    ...filtered.value.map((item) => [
       item.date,
       item.name,
       item.focus,
       (item.timeSpent || []).join("; "),
       (item.keyInsights || []).join("; "),
-      (item.planTomorrow || []).join("; ")
-    ])
+      (item.planTomorrow || []).join("; "),
+    ]),
   ];
-  const csvContent = rows.map(e => e.map(v => `"${v}"`).join(",")).join("\n");
+  const csvContent = rows
+    .map((e) => e.map((v) => `"${v}"`).join(","))
+    .join("\n");
   const blob = new Blob([csvContent], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -81,6 +88,62 @@ function downloadCSV() {
   a.download = "daily-task-history.csv";
   a.click();
   URL.revokeObjectURL(url);
+}
+// Download PDF function
+
+function downloadPDF() {
+  if (filtered.value.length === 0) {
+    alert("No data available to download");
+    return;
+  }
+
+  try {
+    const doc = new jsPDF();
+    const currentDate = new Date().toISOString().split('T')[0];
+    const userName = filtered.value[0].name || 'User'; // Get name from data or use default
+    const currentItem = filtered.value[0]; // Assuming filtered.value contains the data for the current day
+
+    // Name and Date in requested format
+    doc.setFontSize(18);
+    doc.text(`Date : ${currentDate}`, 15, 20);
+    doc.text(`Name : ${userName}`, 15, 30);
+
+    // Focus section
+    doc.setFontSize(16);
+    doc.text(`Focus : ${currentItem.focus}`, 15, 45);
+
+
+    // Time Spent section
+    doc.setFontSize(16);
+    doc.text("Time Spent:", 15, 60);
+    doc.setFontSize(12);
+    currentItem.timeSpent.forEach((item, index) => {
+      doc.text(`• ${item}`, 25, 70 + (index * 7));
+    });
+
+    // Key Insights section
+    const keyInsightsY = 70 + (filtered.value[0].timeSpent.length * 7) + 10;
+    doc.setFontSize(16);
+    doc.text("Key Insights:", 15, keyInsightsY);
+    doc.setFontSize(12);
+    filtered.value[0].keyInsights.forEach((item, index) => {
+      doc.text(`• ${item}`, 25, keyInsightsY + 10 + (index * 7));
+    });
+
+    // Plan for Tomorrow section
+    const planY = keyInsightsY + 10 + (filtered.value[0].keyInsights.length * 7) + 10;
+    doc.setFontSize(16);
+    doc.text("Plan for Tomorrow:", 15, planY);
+    doc.setFontSize(12);
+    filtered.value[0].planTomorrow.forEach((item, index) => {
+      doc.text(`• ${item}`, 25, planY + 10 + (index * 7));
+    });
+
+    doc.save(`daily-update-${currentDate}.pdf`);
+  } catch (error) {
+    console.error("PDF generation error:", error);
+    alert(`PDF generation failed: ${error.message}`);
+  }
 }
 
 function isToday(dateStr) {
@@ -97,10 +160,8 @@ function deleteUpdate(item) {
   if (!confirm("Are you sure you want to delete this update?")) return;
   // Remove from history
   const idx = history.value.findIndex(
-    h =>
-      h.date === item.date &&
-      h.name === item.name &&
-      h.focus === item.focus
+    (h) =>
+      h.date === item.date && h.name === item.name && h.focus === item.focus
   );
   if (idx !== -1) {
     history.value.splice(idx, 1);
@@ -114,254 +175,150 @@ function editUpdate(idx) {
 </script>
 
 <template>
-  <div class="history-bg">
-    <div class="history-wrapper">
-      <h1>Daily Task History</h1>
-      <div class="filter-bar">
-        <label class="filter-box">
-          <input type="radio" value="all" v-model="filterType" /> All
-        </label>
-        <label class="filter-box">
-          <input type="radio" value="week" v-model="filterType" /> This Week
-        </label>
-        <label class="filter-box">
-          <input type="radio" value="month" v-model="filterType" /> This Month
-        </label>
-        <label class="date-custom-filter">
-          Custom:
-          <input type="date" v-model="dateFrom" /> to
-          <input type="date" v-model="dateTo" />
-        </label>
-        <button class="btn primary" @click="downloadCSV" :disabled="filtered.length === 0">
-          Download CSV
-        </button>
+  <div
+    class="container-fluid min-vh-100 d-flex justify-content-center"
+    style="background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%); 
+           padding: 20px;"
+  >
+    <div
+      class="card shadow-lg p-4 border-0 w-100"
+      style="
+        height: fit-content;
+        border-radius: 16px;
+        background: #fff;
+      "
+    >
+      <h1 class="mb-4 fw-bold" style="color: #4f46e5; font-size: 2rem">
+        Daily Task History
+      </h1>
+      <div
+        class="d-flex flex-wrap gap-3 align-items-center justify-content-between mb-3"
+      >
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            value="all"
+            v-model="filterType"
+            id="allRadio"
+          />
+          <label class="form-check-label mx-2" for="allRadio">All</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            value="week"
+            v-model="filterType"
+            id="weekRadio"
+          />
+          <label class="form-check-label mx-2" for="weekRadio">This Week</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            value="month"
+            v-model="filterType"
+            id="monthRadio"
+          />
+          <label class="form-check-label mx-2" for="monthRadio">This Month</label>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span>Custom:</span>
+          <input
+            type="date"
+            v-model="dateFrom"
+            class="form-control form-control-sm"
+            style="width: 140px"
+          />
+          <span>to</span>
+          <input
+            type="date"
+            v-model="dateTo"
+            class="form-control form-control-sm"
+            style="width: 140px"
+          />
+        </div>
+        <div class="dropdown" style="position: relative; z-index: 1051">
+          <button
+            class="btn btn-success px-3 fw-semibold dropdown-toggle"
+            type="button"
+            id="reportDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            :disabled="filtered.length === 0"
+            style="z-index: 1051"
+          >
+            Report Download
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="reportDropdown">
+            <li>
+              <a class="dropdown-item" href="#" @click.prevent="downloadCSV"
+                >Download as CSV</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" @click.stop="downloadPDF">Download as PDF</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <table v-if="filtered.length" class="history-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Focus</th>
-            <th>Time Spent</th>
-            <th>Key Insights</th>
-            <th>Plan Tomorrow</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, idx) in filtered" :key="idx">
-            <td>{{ item.date }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.focus }}</td>
-            <td>
-              <ul>
-                <li v-for="(t, i) in item.timeSpent" :key="i">{{ t }}</li>
-              </ul>
-            </td>
-            <td>
-              <ul>
-                <li v-for="(k, i) in item.keyInsights" :key="i">{{ k }}</li>
-              </ul>
-            </td>
-            <td>
-              <ul>
-                <li v-for="(p, i) in item.planTomorrow" :key="i">{{ p }}</li>
-              </ul>
-            </td>
-            <td>
-              <button
-                v-if="isToday(item.date)"
-                class="btn danger"
-                @click="deleteUpdate(item)"
-              >
-                Delete
-              </button>
-              <button
-                class="btn primary"
-                style="margin-left:6px"
-                @click="editUpdate(idx)"
-              >
-                Edit
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-else class="no-data">No data found.</div>
+      <div class="table-responsive">
+        <table v-if="filtered.length" class="table table-bordered align-middle">
+          <thead class="table-light sticky-top">
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Focus</th>
+              <th>Time Spent</th>
+              <th>Key Insights</th>
+              <th>Plan Tomorrow</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, idx) in filtered" :key="idx">
+              <td>{{ item.date }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.focus }}</td>
+              <td>
+                <ul class="mb-0 ps-3">
+                  <li v-for="(t, i) in item.timeSpent" :key="i">{{ t }}</li>
+                </ul>
+              </td>
+              <td>
+                <ul class="mb-0 ps-3">
+                  <li v-for="(k, i) in item.keyInsights" :key="i">{{ k }}</li>
+                </ul>
+              </td>
+              <td>
+                <ul class="mb-0 ps-3">
+                  <li v-for="(p, i) in item.planTomorrow" :key="i">{{ p }}</li>
+                </ul>
+              </td>
+              <td class="text-center align-items-center d-flex justify-content-center">
+                <button
+                  v-if="isToday(item.date)"
+                  class="btn btn-danger btn-sm "
+                  style="height: max-content;"
+                  @click="deleteUpdate(item)"
+                >
+                  Delete
+                </button>
+                <button
+                  class="btn btn-primary btn-sm ms-1"
+                  style="height: max-content;"
+                  @click="editUpdate(idx)"
+                >
+                  Edit
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-else class="text-center text-muted py-4">No data found.</div>
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.history-bg {
-  min-height: 100vh;
-  background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 8px;
-}
-.history-wrapper {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
-  padding: 40px 32px 32px 32px;
-  max-width: 1100px;
-  width: 100%;
-  margin: 32px 0;
-}
-h1 {
-  margin-bottom: 18px;
-  color: #4f46e5;
-  font-size: 2rem;
-  text-align: left;
-}
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  align-items: center;
-  margin-bottom: 18px;
-  justify-content: space-between;
-}
-.filter-box,
-.date-custom-filter {
-  font-size: 1rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 5px 0;
-}
- .filter-box input {
-    width: fit-content;
-  }
-.date-custom-filter input[type="date"] {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-.btn.primary {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  margin-left: 8px;
-  margin-top: 6px;
-}
-.btn.primary:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  background: #fff;
-  overflow-x: auto;
-  display: block;
-}
-.history-table th,
-.history-table td {
-  border: 1px solid #e0e0e0;
-  padding: 8px 10px;
-  text-align: left;
-  font-size: 1rem;
-  min-width: 120px;
-  vertical-align: top;
-}
-.history-table th {
-  background: #ede9fe;
-  color: #4f46e5;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.no-data {
-  color: #888;
-  text-align: center;
-  margin-top: 30px;
-  font-size: 1.1rem;
-}
-.btn.danger {
-  background: #e11d48;
-  color: #fff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  margin-top: 4px;
-}
-.btn.danger:hover {
-  background: #be123c;
-}
-
-/* Responsive styles */
-@media (max-width: 900px) {
-  .history-wrapper {
-    padding: 24px 8px 16px 8px;
-    max-width: 100%;
-  }
-  .filter-bar {
-    display: flex;
-    flex-direction: row;
-    align-items:center;
-    justify-content: flex-start;
-    gap: 10px;
-  }
-  .btn.primary {
-    width: 100%;
-    margin-left: 0;
-  }
- 
-}
-@media (max-width: 600px) {
-  .history-wrapper {
-    padding: 12px 2px 8px 2px;
-    border-radius: 8px;
-  }
-  h1 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-  }
-  .filter-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-  }
-  .filter-bar label,
-  .filter-bar .date-custom-filter {
-    font-size: 0.9rem;
-    flex-direction: row;
-    align-items: center;
-    gap: 0
-  }
- 
-  .filter-bar label,
-  .filter-bar .date-custom-filter {
-    font-size: 0.98rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-  }
-  
-  .history-table th,
-  .history-table td {
-    font-size: 0.92rem;
-    padding: 6px 4px;
-    min-width: 90px;
-  }
-  .btn.primary, .btn.danger {
-    font-size: 0.98rem;
-    padding: 7px 10px;
-  }
-  .no-data {
-    font-size: 1rem;
-  }
-}
-</style>
