@@ -68,7 +68,7 @@ function logout() {
           class="profile-img"
         />
       </div>
-      <div v-if="showMenu" class="dropdown-menu" @mouseleave="showMenu = false">
+      <div v-if="showMenu" class="dropdown-menu" @mouseleave="showMenu = false" style="position: fixed; z-index: 1051">
         <router-link to="/profile" class="dropdown-item">Profile</router-link>
         <router-link to="/profile-edit" class="dropdown-item">Edit Profile</router-link>
         <router-link to="/history" class="dropdown-item">History</router-link>
@@ -154,9 +154,9 @@ function logout() {
   transform: rotate(180deg);
 }
 .dropdown-menu {
-  position: absolute;
-  top: 54px;
-  right: 0;
+  position: fixed !important;
+  top: 54px !important;
+  right: 20px !important;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
@@ -165,6 +165,7 @@ function logout() {
   display: flex;
   flex-direction: column;
   animation: fadeIn 0.18s;
+  z-index: 3000 !important;
 }
 @keyframes fadeIn {
   from {

@@ -3,6 +3,7 @@ import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+
 const router = useRouter();
 
 const filterType = ref("all");
@@ -99,6 +100,7 @@ function downloadPDF() {
 
   try {
     const doc = new jsPDF();
+    doc.setFont("Segoe UI Emoji", "normal");
     const currentDate = new Date().toISOString().split('T')[0];
     const userName = filtered.value[0].name || 'User'; // Get name from data or use default
     const currentItem = filtered.value[0]; // Assuming filtered.value contains the data for the current day
@@ -146,6 +148,7 @@ function downloadPDF() {
   }
 }
 
+// Check if the date is today
 function isToday(dateStr) {
   const today = new Date();
   const d = new Date(dateStr);
@@ -240,7 +243,7 @@ function editUpdate(idx) {
             style="width: 140px"
           />
         </div>
-        <div class="dropdown" style="position: relative; z-index: 1051">
+        <div class="dropdown" style="position: relative;">
           <button
             class="btn btn-success px-3 fw-semibold dropdown-toggle"
             type="button"
@@ -266,7 +269,7 @@ function editUpdate(idx) {
       </div>
       <div class="table-responsive">
         <table v-if="filtered.length" class="table table-bordered align-middle">
-          <thead class="table-light sticky-top">
+          <thead class="table-light ">
             <tr>
               <th>Date</th>
               <th>Name</th>
