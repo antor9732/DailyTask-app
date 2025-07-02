@@ -8,7 +8,8 @@ const user = ref(JSON.parse(localStorage.getItem("user")));
 <template>
   <div
     class="container-fluid min-vh-100 d-flex align-items-center justify-content-center"
-    style="background: linear-gradient(120deg, #a18cd1 0%, #9333ea 100%)">
+    style="background: linear-gradient(120deg, #a18cd1 0%, #9333ea 100%)"
+  >
     <div
       v-if="user"
       class="card text-center shadow-lg p-4 border-0"
@@ -16,8 +17,9 @@ const user = ref(JSON.parse(localStorage.getItem("user")));
         border-radius: 18px;
         max-width: 550px;
         width: 100%;
-        background: #fff; ">
-
+        background: #fff;
+      "
+    >
       <img
         :src="user.profileImage || defaultImage"
         alt="Profile"
@@ -37,15 +39,18 @@ const user = ref(JSON.parse(localStorage.getItem("user")));
         <strong>Username:</strong> {{ user.username }}
       </p>
       <p class="mb-1" style="color: #333; font-size: 1.05rem">
-        <strong>Role:</strong> {{ user.role || '-' }}
+        <strong>Role:</strong> {{ user.role || "-" }}
       </p>
       <p class="mb-1" style="color: #333; font-size: 1.05rem">
-        <strong>Designation:</strong> {{ user.designation || '-' }}
+        <strong>Designation:</strong> {{ user.designation || "-" }}
       </p>
       <p class="mb-0" style="color: #333; font-size: 1.05rem">
-        <strong>Company Name:</strong> {{ user.company || '-' }}
+        <strong>Company Name:</strong> {{ user.company || "-" }}
       </p>
-      <button class="btn btn-outline-primary mt-3 px-4 fw-semibold" @click="$router.push('/profile-edit')">
+      <button
+        class="btn btn-outline-primary mt-3 px-4 fw-semibold"
+        @click="$router.push('/profile-edit')"
+      >
         Edit Profile
       </button>
     </div>

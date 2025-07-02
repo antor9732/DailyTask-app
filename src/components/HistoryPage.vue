@@ -101,8 +101,8 @@ function downloadPDF() {
   try {
     const doc = new jsPDF();
     doc.setFont("Segoe UI Emoji", "normal");
-    const currentDate = new Date().toISOString().split('T')[0];
-    const userName = filtered.value[0].name || 'User'; // Get name from data or use default
+    const currentDate = new Date().toISOString().split("T")[0];
+    const userName = filtered.value[0].name || "User"; // Get name from data or use default
     const currentItem = filtered.value[0]; // Assuming filtered.value contains the data for the current day
 
     // Name and Date in requested format
@@ -114,31 +114,31 @@ function downloadPDF() {
     doc.setFontSize(16);
     doc.text(`Focus : ${currentItem.focus}`, 15, 45);
 
-
     // Time Spent section
     doc.setFontSize(16);
     doc.text("Time Spent:", 15, 60);
     doc.setFontSize(12);
     currentItem.timeSpent.forEach((item, index) => {
-      doc.text(`• ${item}`, 25, 70 + (index * 7));
+      doc.text(`• ${item}`, 25, 70 + index * 7);
     });
 
     // Key Insights section
-    const keyInsightsY = 70 + (filtered.value[0].timeSpent.length * 7) + 10;
+    const keyInsightsY = 70 + filtered.value[0].timeSpent.length * 7 + 10;
     doc.setFontSize(16);
     doc.text("Key Insights:", 15, keyInsightsY);
     doc.setFontSize(12);
     filtered.value[0].keyInsights.forEach((item, index) => {
-      doc.text(`• ${item}`, 25, keyInsightsY + 10 + (index * 7));
+      doc.text(`• ${item}`, 25, keyInsightsY + 10 + index * 7);
     });
 
     // Plan for Tomorrow section
-    const planY = keyInsightsY + 10 + (filtered.value[0].keyInsights.length * 7) + 10;
+    const planY =
+      keyInsightsY + 10 + filtered.value[0].keyInsights.length * 7 + 10;
     doc.setFontSize(16);
     doc.text("Plan for Tomorrow:", 15, planY);
     doc.setFontSize(12);
     filtered.value[0].planTomorrow.forEach((item, index) => {
-      doc.text(`• ${item}`, 25, planY + 10 + (index * 7));
+      doc.text(`• ${item}`, 25, planY + 10 + index * 7);
     });
 
     doc.save(`daily-update-${currentDate}.pdf`);
@@ -180,16 +180,14 @@ function editUpdate(idx) {
 <template>
   <div
     class="container-fluid min-vh-100 d-flex justify-content-center"
-    style="background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%); 
-           padding: 20px;"
+    style="
+      background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
+      padding: 20px;
+    "
   >
     <div
       class="card shadow-lg p-4 border-0 w-100"
-      style="
-        height: fit-content;
-        border-radius: 16px;
-        background: #fff;
-      "
+      style="height: fit-content; border-radius: 16px; background: #fff"
     >
       <h1 class="mb-4 fw-bold" style="color: #4f46e5; font-size: 2rem">
         Daily Task History
@@ -225,7 +223,9 @@ function editUpdate(idx) {
             v-model="filterType"
             id="monthRadio"
           />
-          <label class="form-check-label mx-2" for="monthRadio">This Month</label>
+          <label class="form-check-label mx-2" for="monthRadio"
+            >This Month</label
+          >
         </div>
         <div class="d-flex align-items-center gap-2">
           <span>Custom:</span>
@@ -243,7 +243,7 @@ function editUpdate(idx) {
             style="width: 140px"
           />
         </div>
-        <div class="dropdown" style="position: relative;">
+        <div class="dropdown" style="position: relative">
           <button
             class="btn btn-success px-3 fw-semibold dropdown-toggle"
             type="button"
@@ -262,14 +262,16 @@ function editUpdate(idx) {
               >
             </li>
             <li>
-              <a class="dropdown-item" href="#" @click.stop="downloadPDF">Download as PDF</a>
+              <a class="dropdown-item" href="#" @click.stop="downloadPDF"
+                >Download as PDF</a
+              >
             </li>
           </ul>
         </div>
       </div>
       <div class="table-responsive">
         <table v-if="filtered.length" class="table table-bordered align-middle">
-          <thead class="table-light ">
+          <thead class="table-light">
             <tr>
               <th>Date</th>
               <th>Name</th>
@@ -300,18 +302,20 @@ function editUpdate(idx) {
                   <li v-for="(p, i) in item.planTomorrow" :key="i">{{ p }}</li>
                 </ul>
               </td>
-              <td class="text-center align-items-center d-flex justify-content-center">
+              <td
+                class="text-center align-items-center d-flex justify-content-center"
+              >
                 <button
                   v-if="isToday(item.date)"
-                  class="btn btn-danger btn-sm "
-                  style="height: max-content;"
+                  class="btn btn-danger btn-sm"
+                  style="height: max-content"
                   @click="deleteUpdate(item)"
                 >
                   Delete
                 </button>
                 <button
                   class="btn btn-primary btn-sm ms-1"
-                  style="height: max-content;"
+                  style="height: max-content"
                   @click="editUpdate(idx)"
                 >
                   Edit

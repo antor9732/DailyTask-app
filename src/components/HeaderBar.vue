@@ -13,7 +13,7 @@ function loadUser() {
 
 onMounted(() => {
   loadUser();
-   window.addEventListener("storage", loadUser);
+  window.addEventListener("storage", loadUser);
 });
 
 window.dispatchEvent(new Event("storage"));
@@ -32,7 +32,8 @@ function logout() {
 <template>
   <header class="header-bar" v-if="user">
     <a class="left" href="/daily-update">
-      <svg class="calendar-check"
+      <svg
+        class="calendar-check"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -49,7 +50,7 @@ function logout() {
       </svg>
       <span class="app-title">Daily Task</span>
     </a>
-   
+
     <div class="right">
       <div class="profile-area" @click="toggleMenu">
         <svg class="dropdown-icon" width="18" height="18" viewBox="0 0 20 20">
@@ -68,12 +69,26 @@ function logout() {
           class="profile-img"
         />
       </div>
-      <div v-if="showMenu" class="dropdown-menu" @mouseleave="showMenu = false" style="position: fixed; z-index: 1051">
+      <div
+        v-if="showMenu"
+        class="dropdown-menu"
+        @mouseleave="showMenu = false"
+        style="position: fixed; z-index: 1051"
+      >
         <router-link to="/profile" class="dropdown-item">Profile</router-link>
-        <router-link to="/profile-edit" class="dropdown-item">Edit Profile</router-link>
+        <router-link to="/profile-edit" class="dropdown-item"
+          >Edit Profile</router-link
+        >
         <router-link to="/history" class="dropdown-item">History</router-link>
-        <router-link v-if="user.role === 'admin'" to="/admin" class="dropdown-item">Admin Dashboard</router-link>
-        <router-link to="/save-draft" class="dropdown-item">Save Draft</router-link>
+        <router-link
+          v-if="user.role === 'admin'"
+          to="/admin"
+          class="dropdown-item"
+          >Admin Dashboard</router-link
+        >
+        <router-link to="/save-draft" class="dropdown-item"
+          >Save Draft</router-link
+        >
         <a href="/" class="dropdown-item" @click.prevent="logout">Logout</a>
       </div>
     </div>

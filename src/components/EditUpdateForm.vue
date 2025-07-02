@@ -16,25 +16,67 @@
       </div>
       <div class="form-group">
         <label>Time Spent</label>
-        <div v-for="(item, idx) in form.timeSpent" :key="idx" style="display:flex;gap:8px;margin-bottom:6px;">
-          <input type="text" v-model="form.timeSpent[idx]" placeholder="Time spent..." />
-          <button type="button" @click="removeItem('timeSpent', idx)" v-if="form.timeSpent.length > 1">Remove</button>
+        <div
+          v-for="(item, idx) in form.timeSpent"
+          :key="idx"
+          style="display: flex; gap: 8px; margin-bottom: 6px"
+        >
+          <input
+            type="text"
+            v-model="form.timeSpent[idx]"
+            placeholder="Time spent..."
+          />
+          <button
+            type="button"
+            @click="removeItem('timeSpent', idx)"
+            v-if="form.timeSpent.length > 1"
+          >
+            Remove
+          </button>
         </div>
         <button type="button" @click="addItem('timeSpent')">Add More</button>
       </div>
       <div class="form-group">
         <label>Key Insights</label>
-        <div v-for="(item, idx) in form.keyInsights" :key="idx" style="display:flex;gap:8px;margin-bottom:6px;">
-          <input type="text" v-model="form.keyInsights[idx]" placeholder="Key insight..." />
-          <button type="button" @click="removeItem('keyInsights', idx)" v-if="form.keyInsights.length > 1">Remove</button>
+        <div
+          v-for="(item, idx) in form.keyInsights"
+          :key="idx"
+          style="display: flex; gap: 8px; margin-bottom: 6px"
+        >
+          <input
+            type="text"
+            v-model="form.keyInsights[idx]"
+            placeholder="Key insight..."
+          />
+          <button
+            type="button"
+            @click="removeItem('keyInsights', idx)"
+            v-if="form.keyInsights.length > 1"
+          >
+            Remove
+          </button>
         </div>
         <button type="button" @click="addItem('keyInsights')">Add More</button>
       </div>
       <div class="form-group">
         <label>Plan for Tomorrow</label>
-        <div v-for="(item, idx) in form.planTomorrow" :key="idx" style="display:flex;gap:8px;margin-bottom:6px;">
-          <input type="text" v-model="form.planTomorrow[idx]" placeholder="Plan for tomorrow..." />
-          <button type="button" @click="removeItem('planTomorrow', idx)" v-if="form.planTomorrow.length > 1">Remove</button>
+        <div
+          v-for="(item, idx) in form.planTomorrow"
+          :key="idx"
+          style="display: flex; gap: 8px; margin-bottom: 6px"
+        >
+          <input
+            type="text"
+            v-model="form.planTomorrow[idx]"
+            placeholder="Plan for tomorrow..."
+          />
+          <button
+            type="button"
+            @click="removeItem('planTomorrow', idx)"
+            v-if="form.planTomorrow.length > 1"
+          >
+            Remove
+          </button>
         </div>
         <button type="button" @click="addItem('planTomorrow')">Add More</button>
       </div>
@@ -58,8 +100,12 @@ const form = reactive({
   name: history[index]?.name || "",
   focus: history[index]?.focus || "",
   timeSpent: history[index]?.timeSpent ? [...history[index].timeSpent] : [""],
-  keyInsights: history[index]?.keyInsights ? [...history[index].keyInsights] : [""],
-  planTomorrow: history[index]?.planTomorrow ? [...history[index].planTomorrow] : [""],
+  keyInsights: history[index]?.keyInsights
+    ? [...history[index].keyInsights]
+    : [""],
+  planTomorrow: history[index]?.planTomorrow
+    ? [...history[index].planTomorrow]
+    : [""],
 });
 
 function addItem(section) {

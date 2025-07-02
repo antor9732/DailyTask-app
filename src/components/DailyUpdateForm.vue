@@ -83,17 +83,19 @@ function saveDraft() {
 </script>
 
 <template>
-  <div 
+  <div
     class="gradientMove container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center p-4"
-    style="background: linear-gradient(45deg, #7b2ff2, #22388A); 
-           background-size: 600% 600%; 
-           animation: gradientMove 15s ease infinite;"
+    style="
+      background: linear-gradient(45deg, #7b2ff2, #22388a);
+      background-size: 600% 600%;
+      animation: gradientMove 15s ease infinite;
+    "
   >
     <!-- Submit Modal -->
     <div
       v-if="showModal"
       class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-      style="background-color: rgba(0,0,0,0.3); z-index: 1050;"
+      style="background-color: rgba(0, 0, 0, 0.3); z-index: 1050"
     >
       <div class="bg-white p-4 rounded shadow text-center">
         <h4 class="mb-0">Submitted successfully!</h4>
@@ -104,7 +106,7 @@ function saveDraft() {
     <div
       v-if="showDraftModal"
       class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-      style="background-color: rgba(0,0,0,0.3); z-index: 1050;"
+      style="background-color: rgba(0, 0, 0, 0.3); z-index: 1050"
     >
       <div class="bg-white p-4 rounded shadow text-center">
         <h4 class="mb-0">Draft saved successfully!</h4>
@@ -119,21 +121,37 @@ function saveDraft() {
     <form
       @submit.prevent="submitUpdate"
       class="bg-white p-4 rounded shadow-sm w-100"
-      
     >
       <div class="row mb-3">
         <div class="col-md-6 mb-3 mb-md-0">
-          <label for="date" class="form-label fw-bold text-secondary">Update Date</label>
-          <input id="date" type="date" class="form-control" v-model="form.date" />
+          <label for="date" class="form-label fw-bold text-secondary"
+            >Update Date</label
+          >
+          <input
+            id="date"
+            type="date"
+            class="form-control"
+            v-model="form.date"
+          />
         </div>
         <div class="col-md-6">
-          <label for="name" class="form-label fw-bold text-secondary">Employee Name</label>
-          <input id="name" type="text" class="form-control" v-model="form.name" readonly />
+          <label for="name" class="form-label fw-bold text-secondary"
+            >Employee Name</label
+          >
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            v-model="form.name"
+            readonly
+          />
         </div>
       </div>
 
       <div class="mb-3">
-        <label for="focus" class="form-label fw-bold text-secondary">Daily Focus</label>
+        <label for="focus" class="form-label fw-bold text-secondary"
+          >Daily Focus</label
+        >
         <input
           id="focus"
           type="text"
@@ -148,7 +166,11 @@ function saveDraft() {
         <!-- Time Spent -->
         <div class="col-md-6">
           <label class="form-label fw-bold text-secondary">Time Spent</label>
-          <div v-for="(item, index) in form.timeSpent" :key="'time-' + index" class="mb-2">
+          <div
+            v-for="(item, index) in form.timeSpent"
+            :key="'time-' + index"
+            class="mb-2"
+          >
             <textarea
               class="form-control"
               v-model="form.timeSpent[index]"
@@ -156,7 +178,11 @@ function saveDraft() {
               rows="3"
             ></textarea>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-primary mt-2" @click="addItem('timeSpent')">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary mt-2"
+            @click="addItem('timeSpent')"
+          >
             + Add Item
           </button>
         </div>
@@ -164,7 +190,11 @@ function saveDraft() {
         <!-- Key Insights -->
         <div class="col-md-6">
           <label class="form-label fw-bold text-secondary">Key Insights</label>
-          <div v-for="(item, index) in form.keyInsights" :key="'insight-' + index" class="mb-2">
+          <div
+            v-for="(item, index) in form.keyInsights"
+            :key="'insight-' + index"
+            class="mb-2"
+          >
             <textarea
               class="form-control"
               v-model="form.keyInsights[index]"
@@ -172,7 +202,11 @@ function saveDraft() {
               rows="3"
             ></textarea>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-primary mt-2" @click="addItem('keyInsights')">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary mt-2"
+            @click="addItem('keyInsights')"
+          >
             + Add Item
           </button>
         </div>
@@ -180,8 +214,14 @@ function saveDraft() {
 
       <!-- Plan Tomorrow Section -->
       <div class="mb-4">
-        <label class="form-label fw-bold text-secondary">Plan for Tomorrow</label>
-        <div v-for="(item, index) in form.planTomorrow" :key="'plan-' + index" class="mb-2">
+        <label class="form-label fw-bold text-secondary"
+          >Plan for Tomorrow</label
+        >
+        <div
+          v-for="(item, index) in form.planTomorrow"
+          :key="'plan-' + index"
+          class="mb-2"
+        >
           <textarea
             class="form-control"
             v-model="form.planTomorrow[index]"
@@ -189,7 +229,11 @@ function saveDraft() {
             rows="3"
           ></textarea>
         </div>
-        <button type="button" class="btn btn-sm btn-outline-primary mt-2" @click="addItem('planTomorrow')">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary mt-2"
+          @click="addItem('planTomorrow')"
+        >
           + Add Item
         </button>
       </div>
