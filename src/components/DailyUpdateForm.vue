@@ -119,7 +119,7 @@ function saveDraft() {
     <form
       @submit.prevent="submitUpdate"
       class="bg-white p-4 rounded shadow-sm w-100"
-      style="max-width: 900px;"
+      
     >
       <div class="row mb-3">
         <div class="col-md-6 mb-3 mb-md-0">
